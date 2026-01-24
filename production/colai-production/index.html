@@ -1,0 +1,436 @@
+<<<<<<< Current (Your changes)
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "marked": "https://cdn.jsdelivr.net/npm/marked@5.0.2/lib/marked.esm.js"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-i18n-text="ColAI">ColAI</h1>
+            <div class="description">
+                <p data-i18n-text="A collaborative framework where neural networks work together through iterative dialogue on any topic.">
+                    A collaborative framework where neural networks work together through iterative dialogue on any topic.
+                </p>
+            </div>
+            <div class="mode-selector">
+                <a href="#" class="mode-link active" data-i18n-text="Collaboration Mode">Collaboration Mode</a>
+                <a href="#mafia" class="mode-link" data-i18n-text="Mafia Game Mode">Mafia Game Mode</a>
+                <a href="#wiki" class="mode-link" data-i18n-text="Wiki">Wiki</a>
+            </div>
+        </header>
+
+        <div class="framework-container">
+            <div class="control-panel">
+                <h2 data-i18n-text="Project Setup">Project Setup</h2>
+                <div class="form-group">
+                    <label for="ollama-model" data-i18n-text="Ollama Model:">Ollama Model:</label>
+                    <input type="text" id="ollama-model" placeholder="qwen2.5:14b" value="qwen2.5:14b">
+                    <div class="network-description" data-i18n-text="Specify the Ollama model name (e.g., qwen2.5:14b, llama3.2, deepseek-r1)">
+                        Specify the Ollama model name (e.g., qwen2.5:14b, llama3.2, deepseek-r1)
+                    </div>
+                    <button id="check-ollama" class="btn btn-secondary" style="margin-top: 5px;" data-i18n-text="Check Connection">Check Connection</button>
+                    <div id="ollama-status" style="margin-top: 5px; font-size: 12px;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="project-name" data-i18n-text="Project Name:">Project Name:</label>
+                    <input type="text" id="project-name" placeholder="Enter project name" data-i18n-text="Enter project name" data-i18n-target="placeholder">
+                </div>
+                <div class="form-group">
+                    <label for="project-description" data-i18n-text="Project Description:">Project Description:</label>
+                    <textarea id="project-description" placeholder="Describe the software application you want to build" data-i18n-text="Describe the software application you want to build" data-i18n-target="placeholder"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file-attachments" data-i18n-text="Attach Files:">Attach Files:</label>
+                    <div class="file-upload-container">
+                        <input type="file" id="file-attachments" multiple class="file-input">
+                        <label for="file-attachments" class="file-upload-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 4.095 0 5.555 0 7.318 0 9.366 1.708 11 3.781 11H7.5V5.5a.5.5 0 0 1 1 0V11h4.188C14.502 11 16 9.57 16 7.773c0-1.636-1.242-2.969-2.834-3.194C12.923 1.999 10.69 0 8 0zm-.354 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V11h-1v3.293l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+                            </svg>
+                            <span data-i18n-text="Choose Files">Choose Files</span>
+                        </label>
+                    </div>
+                    <div id="attachment-preview" class="attachment-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="summarizer-instructions" data-i18n-text="Summarizer Instructions:">Summarizer Instructions:</label>
+                    <textarea id="summarizer-instructions" placeholder="Custom instructions for the Synthesizer Network (optional)" data-i18n-text="Custom instructions for the Synthesizer Network (optional)" data-i18n-target="placeholder"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="max-iterations" data-i18n-text="Maximum Iterations:">Maximum Iterations:</label>
+                    <div class="iterations-input-container">
+                        <input type="number" id="max-iterations-input" min="1" max="100" value="5" class="number-input">
+                        <div class="slider-container">
+                            <input type="range" id="max-iterations" min="1" max="20" value="5" class="slider">
+                            <span id="iteration-value">5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="discussion-rounds" data-i18n-text="Discussion rounds:">Discussion rounds:</label>
+                    <input type="number" id="discussion-rounds" min="1" max="10" value="1">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label" for="infinite-mode">
+                        <input type="checkbox" id="infinite-mode">
+                        <span data-i18n-text="Enable Infinite Discussion Mode">Enable Infinite Discussion Mode</span>
+                    </label>
+                    <div class="network-description" data-i18n-text="Never-ending conversation - networks will continue discussing until manually stopped">
+                        Never-ending conversation - networks will continue discussing until manually stopped
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="interface-language" data-i18n-text="Interface Language:">Interface Language:</label>
+                    <select id="interface-language">
+                        <option value="en">English</option>
+                        <option value="ru">Русский</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt">Português</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="ar">العربية</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="pl">Polski</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="sv">Svenska</option>
+                        <option value="da">Dansk</option>
+                        <option value="no">Norsk</option>
+                        <option value="fi">Suomi</option>
+                        <option value="cs">Čeština</option>
+                        <option value="sk">Slovenčina</option>
+                        <option value="hu">Magyar</option>
+                        <option value="ro">Română</option>
+                        <option value="bg">Български</option>
+                        <option value="hr">Hrvatski</option>
+                        <option value="sr">Српски</option>
+                        <option value="sl">Slovenščina</option>
+                        <option value="et">Eesti</option>
+                        <option value="lv">Latviešu</option>
+                        <option value="lt">Lietuvių</option>
+                        <option value="el">Ελληνικά</option>
+                        <option value="he">עברית</option>
+                        <option value="th">ไทย</option>
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="id">Bahasa Indonesia</option>
+                        <option value="ms">Bahasa Melayu</option>
+                        <option value="tl">Filipino</option>
+                        <option value="sw">Kiswahili</option>
+                        <option value="zu">isiZulu</option>
+                        <option value="af">Afrikaans</option>
+                        <option value="am">አማርኛ</option>
+                        <option value="bn">বাংলা</option>
+                        <option value="gu">ગુજરાતી</option>
+                        <option value="kn">ಕನ್ನಡ</option>
+                        <option value="ml">മലയാളം</option>
+                        <option value="mr">मराठी</option>
+                        <option value="pa">ਪੰਜਾਬੀ</option>
+                        <option value="ta">தமிழ்</option>
+                        <option value="te">తెలుగు</option>
+                        <option value="ur">اردو</option>
+                        <option value="fa">فارسی</option>
+                        <option value="ps">پښتو</option>
+                        <option value="ky">Кыргызча</option>
+                        <option value="kk">Қазақша</option>
+                        <option value="uz">O'zbekcha</option>
+                        <option value="tg">Тоҷикӣ</option>
+                        <option value="mn">Монгол</option>
+                        <option value="my">မြန်မာ</option>
+                        <option value="km">ខ្មែរ</option>
+                        <option value="lo">ລາວ</option>
+                        <option value="si">සිංහල</option>
+                        <option value="ne">नेपाली</option>
+                        <option value="dz">རྫོང་ཁ</option>
+                        <option value="bo">བོད་སྐད་</option>
+                    </select>
+                </div>
+                <div class="model-settings">
+                    <h3>
+                        <span data-i18n-text="Model Settings">Model Settings</span>
+                        <button id="toggle-settings" class="toggle-btn" data-i18n-text="Show">Show</button>
+                    </h3>
+                    <div id="advanced-settings" class="advanced-settings">
+                        <div class="form-group">
+                            <label for="system-prompt" data-i18n-text="System Prompt Template:">System Prompt Template:</label>
+                            <textarea id="system-prompt" placeholder="Customize the system prompt for networks" data-i18n-text="Customize the system prompt for networks" data-i18n-target="placeholder"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="api-keys" data-i18n-text="API Keys Configuration:">API Keys Configuration:</label>
+                            <button id="manage-api-keys" class="btn btn-secondary" data-i18n-text="Manage API Keys">Manage API Keys</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="iteration-type" data-i18n-text="Iteration Determination:">Iteration Determination:</label>
+                            <select id="iteration-type">
+                                <option value="auto" data-i18n-text="Automatic (Standard)">Automatic (Standard)</option>
+                                <option value="custom" data-i18n-text="Custom Cycle Definition">Custom Cycle Definition</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="custom-iteration-container" style="display:none;">
+                            <label for="custom-iteration-cycles" data-i18n-text="Custom Cycle Count:">Custom Cycle Count:</label>
+                            <input type="number" id="custom-iteration-cycles" min="1" max="10" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="temperature" data-i18n-text="Temperature:">Temperature:</label>
+                            <div class="slider-container">
+                                <input type="range" id="temperature" min="0" max="20" value="7" class="slider" step="1">
+                                <span id="temperature-value">0.7</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="max-tokens" data-i18n-text="Max Tokens:">Max Tokens:</label>
+                            <div class="slider-container">
+                                <input type="range" id="max-tokens" min="100" max="2000" value="1000" class="slider" step="100">
+                                <span id="tokens-value">1000</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="top-p" data-i18n-text="Top P:">Top P:</label>
+                            <div class="slider-container">
+                                <input type="range" id="top-p" min="0" max="10" value="10" class="slider" step="1">
+                                <span id="top-p-value">1.0</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="presence-penalty" data-i18n-text="Presence Penalty:">Presence Penalty:</label>
+                            <div class="slider-container">
+                                <input type="range" id="presence-penalty" min="-20" max="20" value="0" class="slider" step="1">
+                                <span id="presence-penalty-value">0.0</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="frequency-penalty" data-i18n-text="Frequency Penalty:">Frequency Penalty:</label>
+                            <div class="slider-container">
+                                <input type="range" id="frequency-penalty" min="-20" max="20" value="0" class="slider" step="1">
+                                <span id="frequency-penalty-value">0.0</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network1">
+                                <input type="checkbox" id="use-network1" checked>
+                                <span data-i18n-text="Enable Analytical Network (Network 1)">Enable Analytical Network (Network 1)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Focuses on critical analysis and structured thinking">
+                                Focuses on critical analysis and structured thinking
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network2">
+                                <input type="checkbox" id="use-network2" checked>
+                                <span data-i18n-text="Enable Creative Network (Network 2)">Enable Creative Network (Network 2)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Focuses on creative thinking and innovative perspectives">
+                                Focuses on creative thinking and innovative perspectives
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network3">
+                                <input type="checkbox" id="use-network3">
+                                <span data-i18n-text="Enable Third Network (Implementation Network)">Enable Third Network (Implementation Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a third network focused on practical implementation and technical feasibility">
+                                Adds a third network focused on practical implementation and technical feasibility
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network4">
+                                <input type="checkbox" id="use-network4">
+                                <span data-i18n-text="Enable Fourth Network (Data Science Network)">Enable Fourth Network (Data Science Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a network focused on data analysis and empirical evidence">
+                                Adds a network focused on data analysis and empirical evidence
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network5">
+                                <input type="checkbox" id="use-network5">
+                                <span data-i18n-text="Enable Fifth Network (Ethical Network)">Enable Fifth Network (Ethical Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a network focused on ethical considerations and societal impact">
+                                Adds a network focused on ethical considerations and societal impact
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network6">
+                                <input type="checkbox" id="use-network6">
+                                <span data-i18n-text="Enable Sixth Network (User Experience Network)">Enable Sixth Network (User Experience Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a network focused on user-centered design and experience">
+                                Adds a network focused on user-centered design and experience
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network7">
+                                <input type="checkbox" id="use-network7">
+                                <span data-i18n-text="Enable Seventh Network (Systems Thinking Network)">Enable Seventh Network (Systems Thinking Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a network focused on holistic view and interconnections">
+                                Adds a network focused on holistic view and interconnections
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-network8">
+                                <input type="checkbox" id="use-network8">
+                                <span data-i18n-text="Enable Eighth Network (Devil's Advocate Network)">Enable Eighth Network (Devil's Advocate Network)</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Adds a network that critically challenges and stress-tests ideas">
+                                Adds a network that critically challenges and stress-tests ideas
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label" for="use-summarizer">
+                                <input type="checkbox" id="use-summarizer" checked>
+                                <span data-i18n-text="Enable Summarizer Network">Enable Summarizer Network</span>
+                            </label>
+                            <div class="network-description" data-i18n-text="Allows the Synthesizer to create summaries and final outputs">
+                                Allows the Synthesizer to create summaries and final outputs
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="logit-bias" data-i18n-text="Logit Bias:">Logit Bias:</label>
+                            <textarea id="logit-bias" placeholder="Optional JSON format token biases, e.g. {'123': 10, '456': -5}" data-i18n-text="Optional JSON format token biases, e.g. {'123': 10, '456': -5}" data-i18n-target="placeholder"></textarea>
+                            <div class="network-description" data-i18n-text="Modify token probabilities during generation (advanced)">
+                                Modify token probabilities during generation (advanced)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button id="add-network" class="btn btn-secondary" data-i18n-text="Add New Network">Add New Network</button>
+                            <div class="network-description" data-i18n-text="Add a custom network with specialized capabilities">
+                                Add a custom network with specialized capabilities
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="start-discussion" class="btn" data-i18n-text="Start Collaboration">Start Collaboration</button>
+                <button id="reset-project" class="btn btn-secondary" data-i18n-text="Reset Project">Reset Project</button>
+                
+                <div class="iterations-display">
+                    <h3 data-i18n-text="Iteration Progress">Iteration Progress</h3>
+                    <div class="iteration-count"><span data-i18n-text="Iterations:">Iterations:</span> <span id="iteration-counter">0</span></div>
+                    <div class="accepted-summaries">
+                        <h4 data-i18n-text="Accepted Summaries">Accepted Summaries</h4>
+                        <ul id="summary-list"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="discussion-area">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h2 data-i18n-text="Development Dialogue">Development Dialogue</h2>
+                        <button id="pause-discussion" class="pause-btn" style="display: none;" data-i18n-text="Pause Discussion">Pause Discussion</button>
+                        <div class="network-status">
+                            <div class="status-indicator active" id="network1-status">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 1</span>
+                            </div>
+                            <div class="status-indicator" id="network2-status">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 2</span>
+                            </div>
+                            <div class="status-indicator" id="network3-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 3</span>
+                            </div>
+                            <div class="status-indicator" id="network4-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 4</span>
+                            </div>
+                            <div class="status-indicator" id="network5-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 5</span>
+                            </div>
+                            <div class="status-indicator" id="network6-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 6</span>
+                            </div>
+                            <div class="status-indicator" id="network7-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 7</span>
+                            </div>
+                            <div class="status-indicator" id="network8-status" style="display: none;">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Network 8</span>
+                            </div>
+                            <div class="status-indicator" id="summarizer-status">
+                                <span class="status-dot"></span>
+                                <span class="status-name">Summarizer</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be added here via JavaScript -->
+                    </div>
+                    <div class="user-input-area" id="user-input-area" style="display: none;">
+                        <textarea id="user-prompt" placeholder="Enter your prompt or instructions here..." data-i18n-text="Enter your prompt or instructions here..." data-i18n-target="placeholder"></textarea>
+                        <div class="user-input-buttons">
+                            <button id="submit-user-prompt" class="btn" data-i18n-text="Submit">Submit</button>
+                            <button id="cancel-user-prompt" class="btn btn-secondary" data-i18n-text="Cancel">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stream interface will be added here by JavaScript -->
+                
+                <div class="output-panel">
+                    <h2 data-i18n-text="Development Output">Development Output</h2>
+                    <div class="final-output" id="final-output">
+                        <p class="placeholder" data-i18n-text="The finalized application details will appear here after collaboration is complete.">
+                            The finalized application details will appear here after collaboration is complete.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" data-i18n-text="Toggle dark/light mode" data-i18n-target="aria-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <script>
+        // Конфигурация API URL для Vercel
+        // Можно задать через переменную окружения или оставить по умолчанию '/api'
+        window.API_URL = window.API_URL || '/api';
+        
+        // Для локальной разработки с Vercel на localhost:3000:
+        // window.API_URL = 'http://localhost:3000/api';
+        
+        // Для продакшена на Vercel (автоматически):
+        // window.API_URL = '/api'; // или полный URL вашего Vercel домена
+    </script>
+    <script src="app.js" type="module"></script>
+</body>
+</html>
+>>>>>>> Incoming (Background Agent changes)

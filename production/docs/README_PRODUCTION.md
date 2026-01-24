@@ -1,213 +1,68 @@
-<<<<<<< Current (Your changes)
-=======
-# Полное руководство по продакшену ColAI
+# Production: Vercel + Render (Ollama)
 
-## 📋 Требования
+## Архитектура
 
-- Node.js 18+
-- Python 3.9+
-- Аккаунты: Vercel, Render.com (4 аккаунта)
-- Uptime Robot (для мониторинга)
+- **Vercel**: Next.js, страницы + API Routes. Принимает запросы, дергает Ollama на Render, отдаёт ответы.
+- **Render**: только **один тип** сервиса — **Ollama** (репо `ollama-server`, Docker). Много инстансов, round‑robin с Vercel.
 
-## 🚀 Шаг 1: Настройка Vercel
+Нет Flask, отдельного «API‑сервера» на Render и т.п. — только Ollama.
 
-### 1.1 Создание проекта
+## 1. Настройка Vercel
 
-1. Подключите репозиторий к Vercel
-2. Выберите Next.js framework preset
-3. **Важно**: Укажите корневую папку `production/vercel/`
-4. Установите переменные окружения:
+1. Подключить репо **colai**.
+2. **Root Directory**: `production/vercel`.
+3. **Framework**: Next.js.
+4. **Environment Variables**:
+   - `RENDER_SERVERS` — URL Ollama на Render через запятую, например:
+     ```
+     RENDER_SERVERS=https://colai-ollama-1.onrender.com,https://colai-ollama-2.onrender.com
+     ```
+   - `NEXT_PUBLIC_API_URL` — по желанию (по умолчанию `/api`).
 
-```env
-RENDER_SERVERS=https://server1.onrender.com,https://server2.onrender.com,...
-DATABASE_URL=postgres://user:password@host:5432/database
-KV_REST_API_URL=https://your-kv-instance.vercel-kv.com
-KV_REST_API_TOKEN=your-kv-token
-API_SECRET=your-secret-key-here
-RENDER_API_KEY=your-render-api-key
-```
+Postgres, KV и т.д. не требуются для базового сценария.
 
-### 1.2 Настройка Vercel Postgres
+## 2. Настройка Render (ollama-server)
 
-1. В панели Vercel → Storage → Create Database
-2. Выберите Postgres
-3. Скопируйте `DATABASE_URL` в переменные окружения
-4. Таблицы создадутся автоматически при первом запросе
+Отдельный репозиторий **ollama-server** с:
 
-### 1.3 Настройка Vercel KV (Redis)
+- Dockerfile;
+- .sh-скриптами: установка Ollama, скачивание модели.
 
-1. В панели Vercel → Storage → Create Database
-2. Выберите KV (Redis)
-3. Скопируйте `KV_REST_API_URL` и `KV_REST_API_TOKEN`
+На Render для каждого инстанса:
 
-## 🖥️ Шаг 2: Настройка Render.com серверов
+- **Type**: Docker.
+- **Repo**: `ollama-server`.
+- **Root Directory**: по структуре репо (если нужно).
 
-### 2.1 Подготовка серверов
+Сервис при старте устанавливает Ollama, качает модель, поднимает Ollama. Его URL (например `https://xxx.onrender.com`) добавляются в `RENDER_SERVERS` в Vercel.
 
-Для каждого из 16 серверов (4 аккаунта × 4 сервера):
+Подробная пошаговая инструкция для переписывания репо `ollama-server` под Render — в [MASTER_PROMPT_OLLAMA_SERVER.md](MASTER_PROMPT_OLLAMA_SERVER.md).
 
-1. Создайте новый Web Service на Render.com
-2. Подключите репозиторий
-3. **Важно**: Укажите корневую папку `production/render-server/`
-4. Настройки:
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn -w 4 -b 0.0.0.0:$PORT app:app --timeout 120`
-   - **Environment**: Python 3
-
-### 2.2 Переменные окружения для каждого сервера
-
-```env
-OLLAMA_URL=http://your-ollama-instance:11434
-RENDER_API_KEY=your-secret-api-key-here
-PORT=5000
-```
-
-**Важно**: Используйте один и тот же `RENDER_API_KEY` для всех серверов.
-
-### 2.3 Список всех серверов
-
-После создания всех 16 серверов, соберите их URL и добавьте в Vercel:
-
-```env
-RENDER_SERVERS=https://colai-server-1.onrender.com,https://colai-server-2.onrender.com,...
-```
-
-## 📊 Шаг 3: Настройка мониторинга
-
-### 3.1 Uptime Robot
-
-Для каждого из 16 серверов создайте монитор:
-
-1. **Monitor Type**: HTTP(s)
-2. **URL**: `https://your-server.onrender.com/health`
-3. **Interval**: 5 minutes
-4. **Alert Contacts**: Ваш email/Telegram
-
-## 🔧 Шаг 4: Локальная разработка
-
-### 4.1 Установка зависимостей
+## 3. Локальная разработка
 
 ```bash
 cd production/vercel
 npm install
+cp .env.local.example .env.local
 ```
 
-### 4.2 Настройка .env.local
+В `.env.local`:
 
-Скопируйте `.env.local.example` в `.env.local` и заполните:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
-OLLAMA_URL=http://localhost:11434
-```
-
-### 4.3 Запуск локального сервера
+- `NEXT_PUBLIC_API_URL=http://localhost:3000/api`
+- `RENDER_SERVERS=https://your-ollama.onrender.com` (или тестовый Ollama).
 
 ```bash
 npm run dev
 ```
 
-Приложение будет доступно на `http://localhost:3000`
+## 4. Проверка
 
-### 4.4 Тестирование Render сервера локально
+- Health: `GET https://your-app.vercel.app/api/health`
+- Генерация: `POST https://your-app.vercel.app/api/ai/generate` с телом `{ "prompt": "Hello" }`
 
-```bash
-cd production/render-server
-pip install -r requirements.txt
-python app.py
-```
+## 5. Чеклист
 
-## 🧪 Шаг 5: Тестирование
-
-### 5.1 Проверка Health Check
-
-```bash
-curl https://your-vercel-app.vercel.app/api/health
-```
-
-### 5.2 Тест генерации
-
-```bash
-curl -X POST https://your-vercel-app.vercel.app/api/ai/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "Hello, how are you?",
-    "model": "qwen2.5:14b",
-    "temperature": 0.7,
-    "maxTokens": 100
-  }'
-```
-
-## 🔒 Безопасность
-
-### API Keys
-
-- Используйте сильные случайные ключи для `RENDER_API_KEY`
-- Храните ключи только в переменных окружения
-- Никогда не коммитьте `.env` файлы
-
-### Rate Limiting
-
-**Vercel API (рекомендуется):**
-- 60 запросов в минуту на IP/API ключ
-- Настраивается в `production/vercel/lib/rateLimiter.js`
-- Использует Vercel KV для глобального rate limiting
-
-**Render серверы:**
-- ⚠️ **ВНИМАНИЕ**: Текущая реализация rate limiting работает только в рамках одного процесса
-- При использовании gunicorn с 4 воркерами, каждый воркер имеет свой счетчик
-- Фактический лимит = RATE_LIMIT_MAX × количество воркеров
-- Для продакшена рекомендуется использовать Redis для глобального rate limiting
-- Основной rate limiting должен выполняться на уровне Vercel API
-
-## 📈 Масштабирование
-
-### Добавление новых серверов
-
-1. Создайте новый сервер на Render
-2. Добавьте его URL в `RENDER_SERVERS` в Vercel
-3. Перезапустите приложение
-
-### Увеличение количества сессий
-
-В `production/render-server/app.py` измените:
-
-```python
-MAX_WORKERS = 8  # Вместо 4
-```
-
-## 🐛 Troubleshooting
-
-### Серверы не отвечают
-
-1. Проверьте health check: `curl https://server.onrender.com/health`
-2. Проверьте логи на Render
-3. Убедитесь, что Ollama доступен
-
-### Медленные ответы
-
-1. Проверьте нагрузку на серверы
-2. Увеличьте количество серверов
-3. Проверьте кэширование (KV должен работать)
-
-### Ошибки базы данных
-
-1. Проверьте `DATABASE_URL` в Vercel
-2. Убедитесь, что Postgres создан и активен
-3. Проверьте логи в Vercel Dashboard
-
-## 🎯 Checklist перед деплоем
-
-- [ ] Все 16 серверов созданы и работают
-- [ ] Health checks проходят успешно
-- [ ] Vercel Postgres настроен
-- [ ] Vercel KV настроен
-- [ ] Все переменные окружения установлены
-- [ ] Uptime Robot мониторы настроены
-- [ ] API ключи сгенерированы и сохранены
-- [ ] Тесты пройдены успешно
-
----
-
-**Готово!** Ваше приложение готово к продакшену! 🚀
->>>>>>> Incoming (Background Agent changes)
+- [ ] Репо `ollama-server` подготовлен под Render (Docker, Ollama, модель).
+- [ ] На Render созданы Ollama‑инстансы, известны их URL.
+- [ ] В Vercel задано `RENDER_SERVERS`.
+- [ ] Health и generate отвечают без ошибок.
