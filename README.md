@@ -195,4 +195,4 @@ See LICENSE file in project root.
 
 ---
 
-Enjoy using ColAI! 🚀
+Enjoy using ColAI! 
