@@ -6,7 +6,7 @@ Russian README - [README_RU.md](README_RU.md)
 
 ColAI is a fully offline platform for collaborative work of multiple neural networks. The system allows multiple AI models to communicate with each other, play games (such as Mafia), discuss projects and work together using local Ollama models.
 
-## 🚀 Key Features
+## Key Features
 
 - **Collaborative Mode**: Up to 8 specialized neural networks work together on any topic
 - **Mafia Mode**: AI players participate in Mafia game with realistic behavior
@@ -15,7 +15,7 @@ ColAI is a fully offline platform for collaborative work of multiple neural netw
 - **Multimodality**: Support for image and document uploads
 - **Live Chat**: Dynamic communication between networks with initiative and fragmented messages
 
-## 📋 System Requirements
+## System Requirements
 
 ### Minimum Requirements:
 - **OS**: Windows 10/11, macOS 10.15+, Linux (Ubuntu 20.04+)
@@ -29,7 +29,7 @@ ColAI is a fully offline platform for collaborative work of multiple neural netw
 - **GPU**: NVIDIA RTX 3060 or better (12+ GB VRAM)
 - **Storage**: 50+ GB SSD
 
-## 📦 Installation
+## Installation
 
 ### Step 1: Install Node.js
 
@@ -115,7 +115,7 @@ Then open in browser: http://localhost:8000
 
 Alternative: Open **ColAI-master/index.html** directly in the browser (Chrome, Firefox, Edge).
 
-## 🎮 Usage
+## Usage
 
 ### First Launch
 
@@ -147,7 +147,7 @@ Alternative: Open **ColAI-master/index.html** directly in the browser (Chrome, F
 3. Click "Start Game"
 4. Game proceeds through day and night phases
 
-## ⚙️ Configuration
+## Configuration
 
 ### Model Selection
 
@@ -159,14 +159,14 @@ The model is saved in localStorage.
 - System Prompt Template, Temperature (0.0–2.0), Max Tokens, Top P
 - Presence Penalty, Frequency Penalty
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 **Ollama not connecting:** Run `ollama serve`, check http://localhost:11434/api/tags  
 **Model not found:** `ollama list`, `ollama pull <model_name>`  
 **Slow performance:** Use smaller model, decrease max_tokens, use fewer networks  
 **CORS errors:** Use local server, not file://
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ColAI-master/
@@ -182,11 +182,11 @@ ColAI-master/
     └── ...
 ```
 
-## 📝 License
+## License
 
 See LICENSE file in project root.
 
-## 🤝 Support
+## Support
 
 1. Check the Troubleshooting section
 2. Ensure Ollama is installed and running
